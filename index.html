@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Record Your Exercises</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=1, user-scalable=no, minimal-ui">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script type="text/javascript" src="https://speechly.github.io/browser-ui/latest/push-to-talk-button.js"></script>
+    <script type="text/javascript" src="https://speechly.github.io/browser-ui/latest/big-transcript.js"></script>
+    <script type="text/javascript" src="https://speechly.github.io/browser-ui/latest/error-panel.js"></script>
+  </head>
+  <style>
+    h1 {
+      text-align: center;
+    }
+  </style>
+  <body>
+    <div id="app">
+      <v-app>
+        <v-main>
+        <v-row>
+        <v-col cols="12" offset="4" sm="4">
+          <!-- form component -->
+          <div v-if="form">
+            <h1>Record Your Activity</h1>
+            <v-form
+              ref="form"
+            >
+              <v-text-field
+                v-model="activity"
+                id="activity"
+                label="Activity"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="amount"
+                id="amount"
+                label="Amount"
+                required
+              ></v-text-field>
+
+              <v-select
+                v-model="unit"
+                :items="units"
+                label="Unit"
+                required
+              ></v-select>
+            </v-form>
+            <v-btn block>
+              Add Activity
+            </v-btn>
+          </div>
+
+        </v-col>
+        </v-row>
+        </v-main>
+      </v-app>
+    </div>
+    <script src="script.js"></script>
+    <div class="speechly">
+      <big-transcript
+        placement="top" >
+      </big-transcript>
+      <push-to-talk-button
+        appid="d91be7e6-0674-444d-98c6-f5c2a5e244e1"
+        placement="bottom" >
+      </push-to-talk-button>
+      <error-panel
+        placement="bottom" >
+      </error-panel>
+      <script>
+        document.getElementsByTagName("push-to-talk-button")[0]
+        .addEventListener("speechsegment", (e) => {
+          const segment = e.detail;
+
+          // autofill form value
+          e.detail.entities.forEach(entity => {
+            document.getElementById(entity.type).value = entity.value
+          });
+
+          // Handle speech segment and make tentative changes to app state
+          console.log("speechsegment message:", segment);
+
+          if (segment.isFinal) {
+            // Handle speech segment and make permanent changes to app state
+            // Optionally show confirmation
+            window.postMessage({ type: "speechhandled", success: true }, "*");
+          }
+        });
+      </script>
+    </div>
+  </body>
+</html>
