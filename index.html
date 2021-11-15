@@ -32,14 +32,12 @@
             >
               <v-text-field
                 v-model="activity"
-                id="activity"
                 label="Activity"
                 required
               ></v-text-field>
 
               <v-text-field
                 v-model="amount"
-                id="amount"
                 label="Amount"
                 required
               ></v-text-field>
@@ -50,49 +48,61 @@
                 label="Unit"
                 required
               ></v-select>
+            
+              <v-btn block @click="submit">
+                Add Activity
+              </v-btn>
             </v-form>
-            <v-btn block>
-              Add Activity
-            </v-btn>
+            <input type="text" id="amount" @change="amount_update" style="display:none">
+            <input type="text" id="activity" @change="activity_update" style="display:none"> 
+            <input type="text" id="unit" @change="unit_update" style="display:none">
+            <div class="speechly">
+              <push-to-talk-button
+                appid="d91be7e6-0674-444d-98c6-f5c2a5e244e1"
+                placement="bottom" >
+              </push-to-talk-button>
+              <error-panel
+                placement="bottom" >
+              </error-panel>
+            </div>
           </div>
+          <!-- record table -->
+          <div v-else>
 
+          </div>
         </v-col>
         </v-row>
         </v-main>
       </v-app>
     </div>
     <script src="script.js"></script>
-    <div class="speechly">
-      <big-transcript
-        placement="top" >
-      </big-transcript>
-      <push-to-talk-button
-        appid="d91be7e6-0674-444d-98c6-f5c2a5e244e1"
-        placement="bottom" >
-      </push-to-talk-button>
-      <error-panel
-        placement="bottom" >
-      </error-panel>
-      <script>
-        document.getElementsByTagName("push-to-talk-button")[0]
-        .addEventListener("speechsegment", (e) => {
-          const segment = e.detail;
+    
+    <big-transcript
+      placement="top" >
+    </big-transcript>
+    <script>
+      document.getElementsByTagName("push-to-talk-button")[0]
+      .addEventListener("speechsegment", (e) => {
+        const segment = e.detail;
 
-          // autofill form value
-          e.detail.entities.forEach(entity => {
-            document.getElementById(entity.type).value = entity.value
-          });
-
-          // Handle speech segment and make tentative changes to app state
-          console.log("speechsegment message:", segment);
-
-          if (segment.isFinal) {
-            // Handle speech segment and make permanent changes to app state
-            // Optionally show confirmation
-            window.postMessage({ type: "speechhandled", success: true }, "*");
-          }
+        // autofill form value
+        e.detail.entities.forEach(entity => {
+          let element = document.getElementById(entity.type)
+          element.value = entity.value
+          var event = new Event('change');
+          // Dispatch it.
+          element.dispatchEvent(event);
         });
-      </script>
-    </div>
+
+        // Handle speech segment and make tentative changes to app state
+        console.log("speechsegment message:", segment);
+
+        if (segment.isFinal) {
+          // Handle speech segment and make permanent changes to app state
+          // Optionally show confirmation
+          window.postMessage({ type: "speechhandled", success: true }, "*");
+        }
+      });
+    </script>
   </body>
 </html>
