@@ -25,7 +25,7 @@
         <v-row>
         <v-col cols="12" offset="4" sm="4">
           <!-- form component -->
-          <div v-if="form">
+          <div>
             <h1>Record Your Activity</h1>
             <v-form
               ref="form"
@@ -53,6 +53,7 @@
                 Add Activity
               </v-btn>
             </v-form>
+
             <input type="text" id="amount" @change="amount_update" style="display:none">
             <input type="text" id="activity" @change="activity_update" style="display:none"> 
             <input type="text" id="unit" @change="unit_update" style="display:none">
@@ -67,7 +68,31 @@
             </div>
           </div>
           <!-- record table -->
-          <div v-else>
+          <div v-if="records.length > 0" style="padding-top: 50px">
+            <v-simple-table ref="table" height="300px">
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">
+                      Exercise Name
+                    </th>
+                    <th class="text-left">
+                      Amount
+                    </th>
+                    <th class="text-left">
+                      Calories
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in records">
+                    <td>{{ item.activity }}</td>
+                    <td>{{ item.amount }} {{ item.unit }}</td>
+                    <td>{{ item.calories }}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
 
           </div>
         </v-col>

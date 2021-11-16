@@ -6,6 +6,7 @@ var resultView = new Vue({
     activity: "",
     unit: "",
     amount: "",
+    calories:"",
     units: [
       "MILES", "KILOMETERS", "MINUTES", "HOURS"
     ],
@@ -26,8 +27,11 @@ var resultView = new Vue({
       if (!this.unit || !this.records || !this.activity) {
         return
       }
-      this.records.push({"unit": this.unit, "amount": this.amount, "activity": this.activity})
-      this.unit = this.amount = this.activity = ""
+      if (this.amount == "1") {
+        this.unit = this.unit.substring(0, this.unit.length - 1)
+      }
+      this.records.push({"unit": this.unit, "amount": this.amount, "activity": this.activity, "calories": this.calories})
+      this.unit = this.amount = this.activity = this.calories = ""
       this.form = false
     }
   }
