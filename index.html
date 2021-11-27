@@ -18,6 +18,45 @@
     h1 {
       text-align: center;
     }
+    :root {
+      --background-color-primary: #ebebeb;
+      --background-color-secondary: #fafafa;
+      --background-color-tertiary: #f0e1e1;
+      --text-primary-color: #222;
+    }
+    :root.dark_theme {
+      --background-color-primary: #1e1e1e;
+      --background-color-secondary: #2d2d30;
+      --background-color-tertiary: #35353b;
+      --text-primary-color: #ddd;
+    }
+    #app {
+      background-color: var(--background-color-primary);
+      color: var(--text-primary-color);
+    }
+    .user_form .v-label {
+      color: var(--text-primary-color);
+    }
+    .user_form input {
+      color: var(--text-primary-color) !important;
+    }
+    .user_form .v-select__selection {
+      color: var(--text-primary-color) !important;
+    }
+    .v-btn { 
+      background-color: var(--background-color-secondary) !important;
+      color: var(--text-primary-color) !important;
+    }  
+    .user_table {
+      background-color: var(--background-color-secondary) !important;
+      color: var(--text-primary-color) !important;
+    }
+    .user_table th {
+      color: var(--text-primary-color) !important;
+    }
+    .user_table tr:hover:not(.v-table__expanded__content) {
+      background: var(--background-color-tertiary) !important;
+    }
   </style>
   <body>
     <div id="app">
@@ -25,6 +64,14 @@
         <v-main>
         <v-row>
         <v-col cols="12" offset="4" sm="4">
+          <!-- dark mode switch -->
+          <div>
+            <input @click="toggleTheme" id="checkbox" type="checkbox" class="switch-checkbox"/>
+            <label for="checkbox" class="switch-label">
+              <span>Dark Mode</span>
+            </label>
+          </div>
+
           <!-- form component -->
           <div>
             <h1>Record Your Activity</h1>
@@ -32,18 +79,21 @@
               ref="form"
             >
               <v-text-field
+                class="user_form"
                 v-model="activity"
                 label="Activity"
                 required
               ></v-text-field>
 
               <v-text-field
+                class="user_form"
                 v-model="amount"
                 label="Amount"
                 required
               ></v-text-field>
 
               <v-select
+                class="user_form"
                 v-model="unit"
                 :items="units"
                 label="Unit"
@@ -70,7 +120,7 @@
           </div>
           <!-- record table -->
           <div v-if="records.length > 0" style="padding-top: 50px">
-            <v-simple-table ref="table" height="300px">
+            <v-simple-table ref="table" height="300px" class="user_table">
               <template v-slot:default>
                 <thead>
                   <tr>

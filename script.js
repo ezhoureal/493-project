@@ -4,10 +4,12 @@ var resultView = new Vue({
   data: {
     user_weight: 150, //default to 150 lbs for now
     records: [],
+    valid: "",
     activity: "",
     unit: "",
     amount: "",
     calories:"",
+    user_theme: "",
     units: [
       "MILES", "KILOMETERS", "MINUTES", "HOURS"
     ],
@@ -81,12 +83,16 @@ var resultView = new Vue({
         curr_result = this.amount
         if (this.activity == 'running') {
           curr_result *= 9
+        } else if (this.activity == 'jogging') {
+          curr_result *= 6
         } else if (this.activity == 'swimming') {
           curr_result *= 35
         } else if (this.activity == 'bicycling') {
           curr_result *= 5
         } else {
           alert('Invalid combination.')
+          this.valid = false;
+          return;
         }
         if (this.unit == 'MILES') {
           return curr_result
@@ -98,7 +104,12 @@ var resultView = new Vue({
     match_and_calculate() {
       // fuzzy match an exercise
       fuzzy_set = FuzzySet(Object.keys(this.all_activities))
-      match = fuzzy_set.get(this.activity)[0][1]
+      match = fuzzy_set.get(this.activity, 'none', 0.3)[0][1]
+      if (match == 'none') {
+        alert('Exercise not found.');
+        this.valid = false;
+        return;
+      }
       this.activity = match
       in_minutes = this.convert_to_minutes()
       // rough calculation based considering weight
@@ -106,6 +117,7 @@ var resultView = new Vue({
       this.calories = caloriesTotal.toFixed(0)
     },
     submit() {
+      this.valid = true;
       if (!this.unit || !this.records || !this.activity) {
         return
       }
@@ -113,9 +125,24 @@ var resultView = new Vue({
       if (this.amount == "1") {
         this.unit = this.unit.substring(0, this.unit.length - 1)
       }
-      this.records.push({"unit": this.unit, "amount": this.amount, "activity": this.activity, "calories": this.calories})
+      // only push valid activities
+      if (this.valid) {
+        this.records.push({"unit": this.unit, "amount": this.amount, "activity": this.activity, "calories": this.calories})
+      }
       this.unit = this.amount = this.activity = this.calories = ""
       this.form = false
+    },
+    setTheme(theme) {
+      console.log("switching to " + theme);
+      this.user_theme = theme;
+      document.documentElement.className = theme;
+    },
+    toggleTheme() {
+      if (this.user_theme == "light_theme" || this.user_theme == "") {
+        this.setTheme("dark_theme");
+      } else {
+        this.setTheme("light_theme");
+      }
     }
   }
 })
