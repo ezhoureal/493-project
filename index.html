@@ -5,6 +5,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=1, user-scalable=no, minimal-ui">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
@@ -57,6 +58,57 @@
     .user_table tr:hover:not(.v-table__expanded__content) {
       background: var(--background-color-tertiary) !important;
     }
+
+    /* Change Dark Mode Checkbox to Toggle Button */
+    .switch-checkbox {
+      -webkit-appearance: none;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      cursor: pointer;
+      margin: 10px;
+    }
+    .switch-checkbox:after {
+      content: '';
+      width: 45px;
+      height: 20px;
+      display: inline-block;
+      background: orange;
+      border-radius: 15px;
+      clear: both;
+    }
+    .switch-checkbox:before {
+      content: '';
+      width: 24px;
+      height: 24px;
+      display: block;
+      position: absolute;
+      left: 0;
+      top: -3px;
+      border-radius: 50%;
+      background: rgb(255, 255, 255);
+      box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    }
+    /* Shift the handle to left on check event */
+    .switch-checkbox:checked:before {
+      left: 24px;
+      box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.6);
+    }
+    /* Background color when toggle button will be active */
+    .switch-checkbox:checked:after {
+      background: darkmagenta;
+    }
+    /* Transition for smoothness */
+    .switch-checkbox,
+    .switch-checkbox:before,
+    .switch-checkbox:after,
+    .switch-checkbox:checked:before,
+    .switch-checkbox:checked:after {
+      transition: ease .5s;
+      -webkit-transition: ease .5s;
+      -moz-transition: ease .5s;
+      -o-transition: ease .5s;
+    }
+
   </style>
   <body>
     <div id="app">
