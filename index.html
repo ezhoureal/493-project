@@ -15,8 +15,14 @@
     <script type="text/javascript" src="fuzzyset.js-master/dist/fuzzyset.js"></script>
   </head>
   <style>
-    h1 {
+    h1, h3 {
       text-align: center;
+    }
+    .hint {
+      position: fixed;
+      bottom: 15%;
+      left: 20%;
+      right: 20%;
     }
     :root {
       --background-color-primary: #ebebeb;
@@ -145,6 +151,10 @@
               </template>
             </v-simple-table>
 
+          </div>
+          <div class="hint">
+            <h3>Speak in the format: &lt;activity&gt; for &lt;amount&gt;</h3>
+            <h3>Example: Run for 2 miles</h3>
           </div>
         </v-col>
         </v-row>
