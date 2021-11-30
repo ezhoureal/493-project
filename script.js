@@ -11,7 +11,7 @@ var resultView = new Vue({
     calories:"",
     user_theme: "",
     units: [
-      "MILES", "KILOMETERS", "MINUTES", "HOURS"
+      "MILES", "MILE", "KILOMETERS", "KILOMETER", "MINUTES", "MINUTE", "HOURS", "HOUR"
     ],
     form: true,
     all_activities: {
@@ -122,9 +122,6 @@ var resultView = new Vue({
         return
       }
       this.match_and_calculate()
-      if (this.amount == "1") {
-        this.unit = this.unit.substring(0, this.unit.length - 1)
-      }
       // only push valid activities
       if (this.valid) {
         this.records.push({"unit": this.unit, "amount": this.amount, "activity": this.activity, "calories": this.calories})
