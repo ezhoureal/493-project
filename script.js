@@ -105,7 +105,7 @@ var resultView = new Vue({
       // fuzzy match an exercise
       fuzzy_set = FuzzySet(Object.keys(this.all_activities))
       match = fuzzy_set.get(this.activity, 'none', 0.3)[0][1]
-      if (match == 'none') {
+      if (match == 'none' || match === undefined) {
         alert('Exercise not found.');
         this.valid = false;
         return;
