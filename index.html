@@ -5,18 +5,23 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=1, user-scalable=no, minimal-ui">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://unpkg.com/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-apexcharts"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
     <script type="text/javascript" src="https://speechly.github.io/browser-ui/latest/push-to-talk-button.js"></script>
     <script type="text/javascript" src="https://speechly.github.io/browser-ui/latest/big-transcript.js"></script>
     <script type="text/javascript" src="https://speechly.github.io/browser-ui/latest/error-panel.js"></script>
     <script type="text/javascript" src="fuzzyset.js-master/dist/fuzzyset.js"></script>
+    <script src="https://kit.fontawesome.com/f8a88e6300.js" crossorigin="anonymous"></script>
   </head>
   <style>
     h1, h3 {
+      text-align: center;
+    }
+    #buttonset {
       text-align: center;
     }
     .hint {
@@ -26,6 +31,8 @@
       right: 20%;
     }
     :root {
+      --fa-primary-color: orange;
+      --fa-secondary-color: darkmagenta;
       --background-color-primary: #ebebeb;
       --background-color-secondary: #fafafa;
       --background-color-tertiary: #f0e1e1;
@@ -64,6 +71,10 @@
     .user_table tr:hover:not(.v-table__expanded__content) {
       background: var(--background-color-tertiary) !important;
     }
+    .user_chart {
+      padding-top: 20px;
+      color: var(--text-primary-color) !important;
+    }
 
     /* Change Dark Mode Checkbox to Toggle Button */
     .switch-checkbox {
@@ -78,30 +89,93 @@
       width: 45px;
       height: 20px;
       display: inline-block;
-      background: orange;
       border-radius: 15px;
       clear: both;
     }
+    #undobutton:after {
+      width: 25px;
+    }
+    #checkbox1:after {
+      background: orange;
+    }
+    #checkbox2:after {
+      background: slategray;
+    }
     .switch-checkbox:before {
-      content: '';
-      width: 24px;
-      height: 24px;
-      display: block;
+
+      width: 26px;
+      height: 26px;
+      display: inline-block;
       position: absolute;
-      left: 0;
       top: -3px;
+      left: 0;
       border-radius: 50%;
       background: rgb(255, 255, 255);
       box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
     }
-    /* Shift the handle to left on check event */
-    .switch-checkbox:checked:before {
+    #undobutton:before {
+      font-family: "Font Awesome 5 Free"; 
+      font-weight: 900; 
+      font-size: 1.2em;
+      text-rendering: auto;
+      content: "\f2ea";
+      padding-left: 3px;
+      padding-bottom: 3px;
+      color: black;
+    }
+    #checkbox1:before {
+      font-family: "Font Awesome 5 Free"; 
+      font-weight: 900; 
+      font-size: 1.2em;
+      text-rendering: auto;
+      content: "\f185";
+      padding-left: 3px;
+      padding-bottom: 3px;
+      color: var(--fa-primary-color, inherit);
+    }
+    #checkbox2:before {
+      font-family: "Font Awesome 5 Free"; 
+      font-weight: 900; 
+      font-size: 1.2em;
+      text-rendering: auto;
+      content: "\f0ce";
+      padding-left: 3px;
+      padding-bottom: 3px;
+      color: black;
+    }
+    #checkbox1:checked:before {
       left: 24px;
       box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.6);
     }
-    /* Background color when toggle button will be active */
-    .switch-checkbox:checked:after {
+    #checkbox2:checked:before {
+      left: 24px;
+      box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.6);
+    }
+    #checkbox1:checked:before {
+      font-family: "Font Awesome 5 Free"; 
+      font-weight: 900; 
+      font-size: 1.2em;
+      text-rendering: auto;
+      content: "\f186";
+      padding-left: 3px;
+      padding-bottom: 3px;
+      color: var(--fa-secondary-color, inherit);
+    }
+    #checkbox2:checked:before {
+      font-family: "Font Awesome 5 Free"; 
+      font-weight: 900; 
+      font-size: 1.2em;
+      text-rendering: auto;
+      content: "\f200";
+      padding-left: 3px;
+      padding-bottom: 3px;
+      color: black;
+    }
+    #checkbox1:checked:after {
       background: darkmagenta;
+    }
+    #checkbox2:checked:after {
+      background: slategray;
     }
     /* Transition for smoothness */
     .switch-checkbox,
@@ -114,6 +188,10 @@
       -moz-transition: ease .5s;
       -o-transition: ease .5s;
     }
+    /* grayedout buttons */
+    .switch-checkbox.grayedout {
+      opacity: 0.3;
+    }
 
   </style>
   <body>
@@ -122,13 +200,22 @@
         <v-main>
         <v-row>
         <v-col cols="12" offset="4" sm="4">
-          <!-- dark mode switch -->
-          <div>
-            <input @click="toggleTheme" id="checkbox" type="checkbox" class="switch-checkbox"/>
-            <label for="checkbox" class="switch-label">
-              <span>Dark Mode</span>
-            </label>
+
+          <!-- button/switch set -->
+          <div id="buttonset">
+            <!-- dark mode switch -->
+            <input @click="toggleTheme" id="checkbox1" type="checkbox" class="switch-checkbox"/>
+
+            <!-- graph mode switch -->
+            <input @click="toggleView" id="checkbox2" type="checkbox" class="switch-checkbox" v-if="records.length > 0"/>
+            <input id="checkbox2" type="checkbox" class="switch-checkbox  grayedout" v-else/>
+
+            <!-- undo button -->
+            <input @click="undoAddActivity" id="undobutton" type="checkbox" class="switch-checkbox" v-if="records.length > 0"/>
+            <input id="undobutton" type="checkbox" class="switch-checkbox grayedout" v-else/>
           </div>
+
+          
 
           <!-- form component -->
           <div>
@@ -177,7 +264,7 @@
             </div>
           </div>
           <!-- record table -->
-          <div v-if="records.length > 0" style="padding-top: 50px">
+          <div v-if="records.length > 0 && !graphMode" style="padding-top: 50px">
             <v-simple-table ref="table" height="300px" class="user_table">
               <template v-slot:default>
                 <thead>
@@ -204,6 +291,12 @@
             </v-simple-table>
 
           </div>
+          <!-- alternative: pie chart -->
+          <v-card-text class="d-flex justify-center">
+            <div id="chart" v-if="graphMode" class="user_chart">
+              <apexchart type="donut" width="500" :options="chartOptions" :series="series"></apexchart>
+            </div>
+          </v-card-text>
           <div class="hint">
             <h3>Speak in the format: &lt;activity&gt; for &lt;amount&gt;</h3>
             <h3>Example: Run for 2 miles</h3>

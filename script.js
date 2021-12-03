@@ -1,6 +1,9 @@
 var resultView = new Vue({
   el: '#app',
   vuetify: new Vuetify(),
+  components: {
+    'apexchart': VueApexCharts
+  },
   data: {
     user_weight: 150, //default to 150 lbs for now
     records: [],
@@ -11,7 +14,7 @@ var resultView = new Vue({
     calories:"",
     user_theme: "",
     units: [
-      "MILES", "KILOMETERS", "MINUTES", "HOURS"
+      "MILES", "MILE", "KILOMETERS", "KILOMETER", "MINUTES", "MINUTE", "HOURS", "HOUR"
     ],
     form: true,
     all_activities: {
@@ -61,7 +64,53 @@ var resultView = new Vue({
       'water aerobics': '4',
       'water polo': '10',
       'weight lifting': '3',
-      'yoga hatha': '4'}
+      'yoga hatha': '4'},
+    graphMode: false,
+    series: [],
+    chartOptions: {
+      chart: {
+        foreColor: '#222',
+        width: 500,
+        type: 'donut',
+      },
+      plotOptions: {
+        pie: {
+          startAngle: -90,
+          endAngle: 270
+        }
+      },
+      dataLabels: {
+        style: {
+          fontSize: '14px',
+          fontWeight: 'bold',
+        },
+        enabled: true
+      },
+      fill: {
+        type: 'gradient',
+      },
+      legend: {
+        fontSize: '15px',
+        itemMargin: {
+          horizontal: 5,
+          vertical: 3
+        },
+        formatter: function(val, opts) {
+          return val + ": " + opts.w.globals.series[opts.seriesIndex] + " Calories"
+        }
+      },
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200
+          },
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }]
+    }
   },
 
   methods: {
@@ -122,12 +171,14 @@ var resultView = new Vue({
         return
       }
       this.match_and_calculate()
-      if (this.amount == "1") {
-        this.unit = this.unit.substring(0, this.unit.length - 1)
-      }
       // only push valid activities
       if (this.valid) {
+        // updating records
         this.records.push({"unit": this.unit, "amount": this.amount, "activity": this.activity, "calories": this.calories})
+        // updating visualization series
+        var arr = this.series.slice()
+        arr.push(this.calories)
+        this.series = arr
       }
       this.unit = this.amount = this.activity = this.calories = ""
       this.form = false
@@ -136,6 +187,20 @@ var resultView = new Vue({
       console.log("switching to " + theme);
       this.user_theme = theme;
       document.documentElement.className = theme;
+      // apexchart-specific changes: only the first level in an object is reactive (?)
+      if (theme == "dark_theme") {
+        this.chartOptions = {...this.chartOptions, ...{
+            chart: {
+              foreColor: '#ddd'
+            }}
+          }
+      } else {
+        this.chartOptions = {...this.chartOptions, ...{
+            chart: {
+              foreColor: '#222'
+            }}
+          }
+      }
     },
     toggleTheme() {
       if (this.user_theme == "light_theme" || this.user_theme == "") {
@@ -143,6 +208,13 @@ var resultView = new Vue({
       } else {
         this.setTheme("light_theme");
       }
+    },
+    toggleView() {
+      console.log("Switching graph/table mode");
+      this.graphMode = !this.graphMode;
+    },
+    undoAddActivity() {
+      this.records.pop();
     }
   }
 })
