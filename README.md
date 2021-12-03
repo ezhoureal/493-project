@@ -7,3 +7,5 @@ Have to serve HTML on localhost.
 
 References:
 1. fuzzyset.js: http://glench.github.io/fuzzyset.js/, helps matching potentially erroneous user inputs (most commonly typos) to a known set of words.
+2. vuetify: https://github.com/vuetifyjs/vuetify, helps creating clean-looking forms and tables.
+3. apexcharts: https://github.com/apexcharts/apexcharts.js, helps creating simple pie charts.
