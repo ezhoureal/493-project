@@ -66,18 +66,14 @@ var resultView = new Vue({
       'weight lifting': '3',
       'yoga hatha': '4'},
     graphMode: false,
-    series: [],
+    series: [], // for pie chart
+    labels_original: [], // for pie chart legend
     chartOptions: {
+      labels: [], // for pie chart legend
       chart: {
         foreColor: '#222',
-        width: 500,
+        width: 480,
         type: 'donut',
-      },
-      plotOptions: {
-        pie: {
-          startAngle: -90,
-          endAngle: 270
-        }
       },
       dataLabels: {
         style: {
@@ -86,17 +82,15 @@ var resultView = new Vue({
         },
         enabled: true
       },
-      fill: {
-        type: 'gradient',
-      },
       legend: {
-        fontSize: '15px',
+        fontSize: '14px',
+        fontWeight: 800,
         itemMargin: {
           horizontal: 5,
           vertical: 3
         },
         formatter: function(val, opts) {
-          return val + ": " + opts.w.globals.series[opts.seriesIndex] + " Calories"
+          return val + ": " + opts.w.globals.series[opts.seriesIndex] + " Cal."
         }
       },
       responsive: [{
@@ -106,7 +100,7 @@ var resultView = new Vue({
             width: 200
           },
           legend: {
-            position: 'bottom'
+            show: false
           }
         }
       }]
@@ -176,9 +170,13 @@ var resultView = new Vue({
         // updating records
         this.records.push({"unit": this.unit, "amount": this.amount, "activity": this.activity, "calories": this.calories})
         // updating visualization series
-        var arr = this.series.slice()
-        arr.push(this.calories)
-        this.series = arr
+        this.series.push(parseInt(this.calories))
+        // updating visualization legend
+        this.labels_original.push(this.activity)
+        this.chartOptions = {...this.chartOptions, ...{
+            labels: this.labels_original}
+          }
+        console.log(this.series)
       }
       this.unit = this.amount = this.activity = this.calories = ""
       this.form = false
@@ -214,7 +212,12 @@ var resultView = new Vue({
       this.graphMode = !this.graphMode;
     },
     undoAddActivity() {
-      this.records.pop();
+      this.records.pop()
+      this.series.pop()
+      this.labels_original.pop()
+      this.chartOptions = {...this.chartOptions, ...{
+          labels: this.labels_original}
+        }
     }
   }
 })
