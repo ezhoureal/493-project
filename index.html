@@ -208,11 +208,11 @@
 
             <!-- graph mode switch -->
             <input @click="toggleView" id="checkbox2" type="checkbox" class="switch-checkbox" v-if="records.length > 0"/>
-            <input id="checkbox2" type="checkbox" class="switch-checkbox  grayedout" v-else/>
+            <input id="checkbox2" type="checkbox" class="switch-checkbox  grayedout" disabled="disabled" v-else/>
 
             <!-- undo button -->
             <input @click="undoAddActivity" id="undobutton" type="checkbox" class="switch-checkbox" v-if="records.length > 0"/>
-            <input id="undobutton" type="checkbox" class="switch-checkbox grayedout" v-else/>
+            <input id="undobutton" type="checkbox" class="switch-checkbox grayedout" disabled="disabled" v-else/>
           </div>
 
           
